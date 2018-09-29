@@ -1,0 +1,174 @@
+﻿<div class="card-header">
+    <i class="fas fa-table"></i>
+    Управление продуктами
+</div>
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="ProductsTable" width="100%" cellspacing="0" style="text-align:center">
+            <thead>
+                <tr>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">ID</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">ProductGroupName</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">Product</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">Carbohydrates</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">BreadUnits</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">GrammInUnit</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite"></th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">
+                        <button id="addProductButton" type="button" name="Add" class="btn bg-dark" data-toggle="modal" data-target="#AddModalP" style="color:ghostwhite">Создать продукт</button>
+                    </th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">ID</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">ProductGroupName</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">Product</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">Carbohydrates</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">BreadUnits</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite">GrammInUnit</th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite"></th>
+                    <th class="text-xs-center" style="background-color: maroon; color:ghostwhite"></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<div class="card-footer small text-muted">Обновленено в @DateTime.Now</div>
+
+<div class="col-lg-4" id="ProductTable" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+    <div class="modal fade right" id="EditModalP" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-full-height modal-right" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Редактирование продукта</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="false">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="bodymodalP">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ProductTable" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+    <div class="modal fade right" id="AddModalP" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-full-height modal-right" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавить продукт</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="false">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="bodymodalAddP">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ProductTable" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+    <div class="modal fade right" id="RemoveModalP" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-full-height modal-right" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Удаление продута</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="false">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="bodymodalRemoveP">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+
+<script>
+    var table;
+    $(document).ready(function () {
+        table = $('#ProductsTable').DataTable({
+            "scrollCollapse": true,
+            "ordering": true,
+            "processing": true,
+            "serverSide": true,
+            "searching": true,
+            "orderMulti": false,
+            "language": {
+                "processing": '<div class="loader"></div><h4 style="color: green;">Загрузка данных...</h4>',
+                "lengthMenu": "<span class='h5 my- 4'>Отобразить _MENU_ элементов</span>",
+                "zeroRecords": "Извините, по Вашему запросу ничего не найдено",
+                "info": "<span class='h5 my- 4'>Страница _PAGE_ из _PAGES_</span>",
+                "infoEmpty": "Нет записей",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "search": "_INPUT_",
+                "searchPlaceholder": "Поиск...",
+                "paginate": {
+                    "previous": "Предыдущая",
+                    "next": "Следующая"
+                }
+            },
+            "order": [[1, 'asc']],
+            "ajax":
+            {
+                "url": "/Admin/GetProductsTable",
+                "type": "POST",
+                "dataType": "JSON",
+            },
+            "columnDefs": [
+                { "targets": [6, 7], "orderable": false },
+                { "targets": [6, 7], "searchable": false },
+                { "width": "5%", "targets": [6, 7] }
+            ],
+            "columns": [
+                { "data": "ID", "name": "ID" },
+                { "data": "ProductGroupName", "name": "ProductGroupName" },
+                { "data": "Product", "name": "Product" },
+                { "data": "Carbohydrates", "name": "Carbohydrates" },
+                { "data": "BreadUnits", "name": "BreadUnits" },
+                { "data": "GrammInUnit", "name": "GrammInUnit" },
+                {
+                    mRender: function (data, type, row) {
+                        return '<button type="button" name="Edit" class="btn btn-warning waves-effect waves-light" data-toggle="modal" data-target="#EditModalP">Редактировать</button>';
+                    }
+                },
+                {
+                    mRender: function (data, type, row) {
+                        return '<button type="button" name="Remove" class="btn btn-danger waves-effect waves-light" data-toggle="modal" data-target="#RemoveModalP">Удалить</button>';
+                    }
+                },
+            ],
+            "select": true
+        });
+
+        $('#addProductButton').on('click', function () {
+            $.get("/Admin/AddProductTable").done(function (data) {
+                $('#bodymodalAddP').html(data);
+            });
+        });
+    });
+
+    $('#ProductsTable').on('click', 'tbody tr', function (e) {
+        var data = table.row(this).data();
+        var uid = data.ID;
+
+        $.get("/Admin/EditProductTable", { ID: uid }).done(function (data) {
+            $('#bodymodalP').html(data);
+        });
+    });
+
+    $('#ProductsTable').on('click', 'tbody tr', function (e) {
+        var data = table.row(this).data();
+        var uid = data.ID;
+
+        $.get("/Admin/RemoveProductTable", { ID: uid }).done(function (data) {
+            $('#bodymodalRemoveP').html(data);
+        });
+    });
+
+</script>

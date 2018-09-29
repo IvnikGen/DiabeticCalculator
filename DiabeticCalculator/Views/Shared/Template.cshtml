@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>@ViewBag.Title</title>
+    <link rel="icon" href="@Url.Content("~/Content/favicon.ico")" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Loader.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/Content/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/select.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/Template/css/mdb.min.css" rel="stylesheet">
+    <link href="~/Content/css/ButtonUp/BackTop.css" rel="stylesheet">
+    <link href="~/Content/AdminMDB/css/sb-admin.css" rel="stylesheet">
+
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Scripts/dataTables.select.min.js"></script>
+    <script src="~/Scripts/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/js/ButtonUp/BackTop.js" type="text/javascript"></script>
+
+</head>
+<body class="grey lighten-3" id="top">
+
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark scrolling-navbar">
+            <div class="container">
+                <!-- Brand -->
+                <a class="navbar-brand waves-effect" href="@Url.Action("Index", "Home")" target="_blank">
+                    <strong class="blue-text">DIACALC</strong>
+                </a>
+                <!-- Collapse -->
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- Links -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Left -->
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect" href="@Url.Action("Index", "Home")">
+                                Домой
+                                @*<span class="sr-only">(current)</span>*@
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect" href="@Url.Action("Index", "Information")" target="_blank">Информация</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect disabled" href="#" target="_blank">Таблицы для печати</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect" href="@Url.Action("Index", "Area")" target="_blank">Личный кабинет</a>
+                        </li>
+                    </ul>
+                    <!-- Right -->
+                    <ul class="navbar-nav nav-flex-icons">
+                        <li class="nav-item">
+                            <a href="https://www.facebook.com/mdbootstrap" class="nav-link waves-effect" target="_blank">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://twitter.com/MDBootstrap" class="nav-link waves-effect" target="_blank">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://plus.google.com/u/0/b/107863090883699620484" class="nav-link waves-effect" target="_blank">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar -->
+    </header>
+
+    <main class="mt-5 pt-5">
+        @RenderBody()
+    </main>
+
+    <footer class="page-footer text-center font-small mdb-color darken-2 mt-4 wow fadeIn">
+        <hr class="my-4">
+        <!-- Social icons -->
+        <div class="pb-4">
+            <a href="https://www.facebook.com/mdbootstrap" target="_blank">
+                <i class="fa fa-facebook mr-3"></i>
+            </a>
+            <a href="https://twitter.com/MDBootstrap" target="_blank">
+                <i class="fa fa-twitter mr-3"></i>
+            </a>
+            <a href="https://www.youtube.com/watch?v=7MUISDJ5ZZ4" target="_blank">
+                <i class="fa fa-youtube mr-3"></i>
+            </a>
+            <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
+                <i class="fa fa-google-plus mr-3"></i>
+            </a>
+            <a href="https://dribbble.com/mdbootstrap" target="_blank">
+                <i class="fa fa-dribbble mr-3"></i>
+            </a>
+            <a href="https://pinterest.com/mdbootstrap" target="_blank">
+                <i class="fa fa-pinterest mr-3"></i>
+            </a>
+            <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
+                <i class="fa fa-github mr-3"></i>
+            </a>
+            <a href="http://codepen.io/mdbootstrap/" target="_blank">
+                <i class="fa fa-codepen mr-3"></i>
+            </a>
+        </div>
+        <!-- Social icons -->
+        <div class="footer-copyright py-3">
+            <p>&copy; @DateTime.Now.Year - Diabetic Calculator</p>
+        </div>
+    </footer>
+
+
+    @RenderSection("scripts", required: false)
+
+    <script type="text/javascript" src="~/Content/Template/js/popper.min.js"></script>
+    <script type="text/javascript" src="~/Content/Template/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Content/Template/js/mdb.min.js"></script>
+
+    <script type="text/javascript">
+        new WOW().init();
+    </script>
+
+
+
+</body>
+</html>
+
+<style>
+    #top{
+        font-family: 'Courier New';
+    }
+</style>

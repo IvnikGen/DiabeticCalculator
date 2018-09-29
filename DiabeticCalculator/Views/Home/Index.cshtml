@@ -1,0 +1,138 @@
+﻿
+@{
+    Layout = "~/Views/Shared/Template.cshtml";
+    ViewBag.Title = "Index";
+}
+
+<div class="container">
+    <p id="back-top">
+        <a href="#top"><span></span></a>
+    </p>
+
+
+    <section class="mt-4">
+
+        <div class="row">
+            <div class="col-md-8">
+                  <div class="card mb-4 wow fadeIn">
+                    <img src="/Images/Main.jpg" class="img-fluid rounded" alt="">
+                 </div>
+            </div>
+            <div class="col-md-4">
+                @Html.Partial("LoginPartial")
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4 wow fadeIn">
+                    <!--Card content-->
+                    <div class="card-body text-center">
+                        <p class="h5 my-4">Для чего нужны таблицы хлебных единиц</p>
+                        <p>
+                            Цель терапии больных сахарным диабетом – имитировать естественный выброс инсулина,
+                            подобрав такие дозы и образ жизни, чтобы уровень гликемии был приближен к принятым нормам.
+                        </p>
+                        <h5 class="my-4">
+                            <strong>При известной массе продукта и содержании углеводов в 100 граммах – можно определить число хлебных единиц.</strong>
+                        </h5>
+
+                        @Html.Action("GetGroupList", "Navigation")
+
+                        <hr>
+                        <a class="btn btn-outline-info" href="https://mdbootstrap.com/getting-started/" role="button" target="_blank">Скачать таблицу ХЕ<i class="fa fa-download ml-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4 text-center wow fadeIn">
+                    <div class="card-header">Как пользоваться калькулятором</div>
+                    <!--Card content-->
+                    <div class="card-body">
+                        <div class="text-left">
+                            <p>
+                                Калькулятор основан на простой таблице калорийности продуктов.
+                                В <a href="#navProdGroup" class="text-success">навигационном блоке ниже</a> вы можете видеть категории, нажав на которые открывается таблица со списком входящих в них продуктов
+                            </p>
+                            <p>
+                                Нажав на любой продукт в таблице, он появится у вас в таблице <a href="#navCalcTable" class="text-success">"Калькулятор питания"</a>. В таблице вы увидите данные о
+                                пищевой ценности выбранного продукта, а также сможете изменять его вес.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-4 wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+                    <!--Card content-->
+                    <div class="card-body">
+                        <div id="CalcTable">
+                            @Html.Action("GetTableDataAdmin", new { ProductID = -1, gramm = 0 })
+                        </div>
+                        <p>Вы можете сохранить получившийся рецепт для дальнейшего использования. Для этого нужно войти под своей учетной записью.</p>
+                        <a id="signinsecondbtn" class="btn btn-blue-grey btn-md" href="@Url.Action("Login", "Account")">Войти</a>
+                        @if (User.Identity.IsAuthenticated)
+                {
+                    <a id="saveratiobtn" class="btn btn-info btn-md" href="@Url.Action("SendToArea", "Home")">Сохранить</a>
+        }
+        else
+        {
+            <a id="saveratiobtn" class="btn btn-info btn-md disabled" href="#">Сохранить</a>
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                @{
+                    Html.RenderAction("GetGroupListAll", "Navigation");
+                }
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-4 wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+                    <!--Card content-->
+                    <div class="card-body">
+                        <p class="h5 my-4">Таблица калорийности продуктов</p>
+                        <div id="BreadUnitTable">
+                            @Html.Action("GetTableData", new { groupName = "Бобовые" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<style>
+    .imageInCarousel {
+        border-radius: 30%;
+        max-height: 150px;
+        max-width: 150px;
+        width: 150px;
+        height: 150px;
+        margin-left: 10px;
+        margin-top: 2px;
+    }
+
+        .imageInCarousel:hover {
+            box-shadow: 0px 0px 30px darkcyan;
+            cursor: pointer;
+        }
+</style>
+
+<script>
+    $('#signinsecondbtn').click(function () {
+        $('#registerdiv').css("display", "none");
+        $('#signindiv').css("display", "block");
+        $.get("/Account/Login").done(function (data) {
+            $('#signindiv').html(data)
+        });
+    });
+
+</script>

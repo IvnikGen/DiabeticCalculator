@@ -1,0 +1,67 @@
+﻿@model List<DiabeticCalculator.Models.ViewUserModelGrouped>
+
+@{
+    ViewBag.Title = "Admin Panel";
+    Layout = "~/Views/Shared/LayoutAdminPanel.cshtml";
+}
+
+<div class="card-header">
+    <i class="fas fa-chart-area"></i>
+    Зарегестрированные пользователи
+</div>
+<div class="card-body">
+    <canvas id="usersAllChart" width="100%" height="30"></canvas>
+</div>
+<div class="card-footer small text-muted">Последнее обновление @DateTime.Now</div>
+
+<div class="card mb-3">
+    @Html.Action("GetProductsBar")
+</div>
+
+<script src="~/Content/AdminMDB/vendor/chart.js/Chart.min.js"></script>
+<script src="~/Content/AdminMDB/js/sb-admin.min.js"></script>
+<script src="~/Scripts/Moment.js"></script>
+<script>
+
+    var pieChartData = @Html.Raw(Json.Encode(Model));
+    var template = 'DD.MM.YYYY'
+    function datemaker(date) {
+        if (date === null) return "";
+        return moment(date).format(template);
+    }
+
+
+    var ctx = $("#usersAllChart")
+    var labels = [], data = [];
+    pieChartData.forEach(function (packet) {
+        labels.push(datemaker(packet.DateCreate));
+        data.push(packet.Count);
+    });
+
+    var tempData = {
+        labels: labels,
+        datasets: [
+            {
+            label: "Пользователи",
+            fillColor: "rgba(0, 102, 153,0.2)",
+            strokeColor: "rgba(0, 102, 153,1)",
+            pointColor: "rgba(0, 102, 153,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(0, 102, 153,1)",
+            backgroundColor: "rgba(0, 102, 153,0.2)",
+            borderColor: "rgba(0, 102, 153,1)",
+            data: data
+        }
+        ]
+    };
+    var myPieChart = new Chart(ctx, {
+        type: 'line',
+        data: tempData,
+        options: {
+            responsive: true
+        }
+    });
+</script>
+
+

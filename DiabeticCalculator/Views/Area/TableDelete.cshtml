@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "TableDelete";
+}
+
+@using (Html.BeginForm())
+{
+   
+<div class="row">
+    <div class="card mb-4 wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+        <div class="card-body">
+
+            <p class="h5 my-4">Вы уверены, что хотите удалить запись @Html.Raw(ViewBag.ProdName) из списка?</p>
+            <div class="col-md-4 mb-4">
+                <button type="submit" class="btn btn-success btn-block btn-rounded z-depth-1 waves-effect waves-light">ОК</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+}
+
+

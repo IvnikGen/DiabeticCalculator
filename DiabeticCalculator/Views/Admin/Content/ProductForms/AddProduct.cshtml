@@ -1,0 +1,38 @@
+﻿@model DiabeticCalculator.Models.ProductModal
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="form-group">
+    <small style="color:orangered">
+        @Html.ValidationSummary(true)
+    </small>
+    <div style="width:100%">
+        <div class="form-group">
+            @Html.Label("ProductGroupName:", new { @class = "col-form-label" })
+            <p>  @Html.DropDownListFor(model => model.ProductGroupName, (IEnumerable<SelectListItem>)ViewBag.Groups, new { @class = "form-control" })</p>
+        </div>
+        <div class="form-group">
+            @Html.Label("Product:", new { @class = "col-form-label" })
+            <p>@Html.EditorFor(model => model.Product, new { htmlAttributes = new { @required = true, @class = "form-control" } })</p>
+        </div>
+        <div class="form-group">
+            @Html.Label("Carbohydrates:", new { @class = "col-form-label" })
+            <p>@Html.EditorFor(model => model.Carbohydrates, new { htmlAttributes = new { @required = true, @type = "number", @step = "0.001", @class = "form-control" } })</p>
+        </div>
+        <div class="form-group">
+            @Html.Label("BreadUnits:", new { @class = "col-form-label" })
+            <p>@Html.EditorFor(model => model.BreadUnits, new { htmlAttributes = new { @required = true, @type = "number", @step = "0.001", @class = "form-control" } })</p>
+        </div>
+        <div class="form-group">
+            @Html.Label("GrammInUnit:", new { @class = "col-form-label" })
+            <p>@Html.EditorFor(model => model.GrammInUnit, new { htmlAttributes = new { @required = true, @class = "form-control" } })</p>
+        </div>
+        <div>
+            <button class="btn btn-success  btn-lg btn-group" type="submit" style="float:right">Сохранить</button>
+        </div>
+    </div>
+</div>
+        }
+

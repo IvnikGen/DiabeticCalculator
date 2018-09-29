@@ -1,0 +1,23 @@
+﻿@model SqlConnector.Objects.ProductGroups
+
+
+@using (Html.BeginForm())
+{
+<div style="width:100%">
+    <div class="form-group">
+        @Html.Label("GroupID:", new { @class = "col-form-label" })
+        <p>@Html.EditorFor(model => model.GroupID, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })</p>
+    </div>
+    <div class="form-group">
+        @Html.Label("GroupName:", new { @class = "col-form-label" })
+        <p>  @Html.EditorFor(model => model.GroupName, new { htmlAttributes = new { @required = true, @class = "form-control" } })</p>
+    </div>
+    <div class="form-group">
+        @Html.Label("GroupImage:", new { @class = "col-form-label" })
+        <p>@Html.EditorFor(model => model.GroupImage, new { htmlAttributes = new { @required = true, @class = "form-control" } } )</p>
+    </div>
+    <div>
+        <button class="btn btn-success  btn-lg btn-group" type="submit" style="float:right">Сохранить</button>
+    </div>
+</div>
+}

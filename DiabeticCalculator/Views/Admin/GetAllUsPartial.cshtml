@@ -1,0 +1,119 @@
+﻿
+
+<h2>Зарегистрированные пользователи</h2>
+<table id="AllRegistered" class="table table-striped table-bordered" cellspacing="0">
+    <thead>
+        <tr>
+            <th class="col-md-2" style="background-color: maroon; color:ghostwhite">ID</th>
+            <th class="col-md-2" style="background-color: maroon; color:ghostwhite">Account Name</th>
+            <th class="col-md-2" style="background-color: maroon; color:ghostwhite">Email</th>
+            <th class="col-md-2" style="background-color: maroon; color:ghostwhite">User Role</th>
+            <th class="col-md-2" style="background-color: maroon; color:ghostwhite">Date Create</th>
+            <th class="col-md-1" style="background-color: maroon; color:ghostwhite"></th>
+            <th class="col-md-1" style="background-color: maroon; color:ghostwhite"></th>
+        </tr>
+    </thead>
+</table>
+
+<script src="~/Content/AdminMDB/vendor/datatables/jquery.dataTables.js"></script>
+<script src="~/Content/AdminMDB/vendor/datatables/dataTables.bootstrap4.js"></script>
+<script src="~/Scripts/Moment.js"></script>
+<script>
+        var tableReg;
+        $(document).ready(function () {
+            tableReg = $('#AllRegistered').DataTable(
+                {
+                    "scrollY": "600px",
+                    "scrollCollapse": true,
+                    "ordering": true,
+                    "processing": true,
+                    "serverSide": true,
+                    "searching": true,
+                    "orderMulti": false,
+                    "language": {
+                        "processing": '<div class="loader"></div><h4 style="color: green;">Загрузка данных...</h4>',
+                        "lengthMenu": "<span class='h5 my- 4'>Отобразить _MENU_ элементов</span>",
+                        "zeroRecords": "Извините, по Вашему запросу ничего не найдено",
+                        "info": "<span class='h5 my- 4'>Страница _PAGE_ из _PAGES_</span>",
+                        "infoEmpty": "Нет записей",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        "search": "_INPUT_",
+                        "searchPlaceholder": "Поиск...",
+                        "paginate": {
+                            "previous": "Предыдущая",
+                            "next": "Следующая"
+                        }
+                    },
+                    "order": [[0, 'asc']],
+                    "ajax":
+                    {
+                        "url": "/Admin/GetAllUsPartial",
+                        "type": "POST",
+                        "dataType": "JSON"
+                    },
+                    "columnDefs": [
+                        { "targets": [5, 6], "orderable": false },
+                        { "targets": [5, 6], "searchable": false }
+                    ],
+                    "columns": [
+                        { "data": "ID", "name": "ID" },
+                        { "data": "AccountName", "name": "AccountName" },
+                        { "data": "Email", "name": "Email" },
+                        { "data": "UserRole", "name": "UserRole" },
+                        {
+                            "data": "DateCreate",
+                            "name": "DateCreate",
+                            "type": "datetime",
+                            "render": function (value) {
+                                if (value === null) return "";
+                                return moment(value).format('DD.MM.YYYY HH:mm:ss');
+                            }
+                        },
+                        {
+                            mRender: function (data, type, row) {
+                                var userExists = "@ViewBag.User";
+                                if (userExists != "False") {
+                                    return '<button type="button" name="Edit" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#EditModalAdm">Редактировать</button>';
+                                }
+                                else {
+                                    return '<button type="button" name="Edit" class="btn btn-primary waves-effect waves-light" disabled=true>Редактировать</button>';
+                                }
+                            }
+                        },
+                        {
+                            mRender: function (data, type, row) {
+                                var userExists = "@ViewBag.User";
+                                if (userExists != "False") {
+                                    return '<button type="button" name="Remove" class="btn btn-warning waves-effect waves-light" data-toggle="modal" data-target="#DeleteModalAdm">Удалить</button>';
+                                }
+                                else {
+                                    return '<button type="button" name="Edit" class="btn btn-warning waves-effect waves-light" disabled=true>Удалить</button>';
+                                }
+                            }
+                        }
+                    ],
+                });
+        });
+
+        $('#AllRegistered').on('click', 'tr', function () {
+            var data = tableReg.row(this).data();
+            var uid = data.ID;
+            $.get("/Admin/Edit", { id: uid }).done(function (data) {
+                $('#bodymodalEdAdm').html(data);
+            });
+        });
+        $('#AllRegistered').on('click', 'tr', function () {
+            var data = tableReg.row(this).data();
+            var uid = data.ID;
+            $.get("/Admin/Delete", { id: uid }).done(function (data) {
+                $('#bodymodalDel').html(data);
+            });
+        });
+</script>
+
+<style>
+    td {
+        text-align: center;
+    }
+</style>
+

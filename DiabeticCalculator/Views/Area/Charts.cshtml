@@ -1,0 +1,214 @@
+﻿@model List<SqlConnector.Objects.PersonalArea>
+
+@{
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+    ViewBag.Title = "Charts";
+}
+
+
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="sidebar navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("Index", "Area")">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Мои рационы</span>
+            </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="@Url.Action("Charts", "Area")">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Графики</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Журнал</span>
+            </a>
+        </li>
+    </ul>
+    <div id="content-wrapper">
+        <div class="container-fluid">
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Графики</a>
+                </li>
+                <li class="breadcrumb-item active">Просмотр</li>
+            </ol>
+            <!-- Area Chart Example-->
+            <div class="card mb-3">
+                @Html.Action("GetGraphArea")
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-chart-pie"></i>
+                            Статистика употребления группп продуктов
+                        </div>
+                        <div class="card-body">
+                            <canvas id="myPieChart" width="100%" height="100" ></canvas>
+                        </div>
+                        <div class="card-footer small text-muted">Последнее обновление @DateTime.Now</div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-chart-bar"></i>
+                            Продукты из группы <span id="chartBarHeader"></span>
+                        </div>
+                        <div class="card-body" style="z-index:2">
+                            <canvas id="myBarChart" width="100%" height="50" style="z-index: -1"></canvas>
+                        </div>
+                        <div class="card-footer small text-muted">Последнее обновление @DateTime.Now</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+        <!-- Sticky Footer -->
+        <footer class="sticky-footer">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>&copy; @DateTime.Now.Year - Diabetic Calculator</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- /.content-wrapper -->
+</div>
+
+
+
+<script src="~/Content/AdminMDB/vendor/jquery/jquery.min.js"></script>
+<script src="~/Content/AdminMDB/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/Content/AdminMDB/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="~/Content/AdminMDB/vendor/chart.js/Chart.min.js"></script>
+
+
+<script>
+    // Set new default font family and font color to mimic Bootstrap's default styling
+    Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#292b2c';
+
+    var pieChartData = @Html.Raw(Json.Encode(Model.GroupBy(x => x.ProductGroupName).Select(g => new { Name = g.Key, Count = g.Count() })));
+
+    var ctx = $("#myPieChart")
+
+    var labels = [], data = [];
+    pieChartData.forEach(function (packet) {
+        labels.push(packet.Name);
+        data.push(packet.Count);
+    });
+
+    var tempData = {
+        labels: labels,
+        datasets: [{
+            backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745'],
+            data: data
+        }]
+    };
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: tempData,
+    });
+
+
+
+    $(document).ready(
+        function () {
+            var canvas = document.getElementById("myPieChart");
+            var ctxbar = document.getElementById("myBarChart");
+            var barChartData = @Html.Raw(Json.Encode(Model));
+
+            new Chart(ctxbar, {
+                type: 'bar',
+               
+            });
+
+
+            canvas.onclick = function (evt) {
+                var barlabel = "";
+
+                var activePoints = myPieChart.getElementsAtEvent(evt);
+
+
+                if (activePoints[0]) {
+                    var chartData = activePoints[0]['_chart'].config.data;
+                    var idx = activePoints[0]['_index'];
+
+                    barlabel = chartData.labels[idx];
+
+                    $("#chartBarHeader").html(barlabel);
+
+                    var barLabels = [], bardata = [];
+                    barChartData.forEach(function (packet) {
+                        if (packet.ProductGroupName == barlabel) {
+                            barLabels.push(packet.Product);
+                            bardata.push(packet.BreadUnits);
+                        }
+                    });
+
+                    var myLineChart = new Chart(ctxbar, {
+                        type: 'bar',
+                        data: {
+                            labels: barLabels,
+                            datasets: [{
+                                label: "Хлебные еденицы",
+                                data: bardata,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }],
+                        },
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        maxTicksLimit: 10
+                                    }
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        min: 0,
+                                        max: 30,
+                                        maxTicksLimit: 30
+                                    },
+                                    gridLines: {
+                                        display: true
+                                    }
+                                }],
+                            },
+                            legend: {
+                                display: false
+                            },
+                            hover: { mode: null },
+                            tooltips: { enabled: false },
+                            events: []
+                        }
+                    });
+                }
+            };
+        }
+    );
+</script>

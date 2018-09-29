@@ -1,0 +1,41 @@
+﻿
+ <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="5000">
+        <div class="carousel-inner">
+            @{
+                int delimiter = Model.Count / 3;
+
+                <div class="carousel-item">
+                    <div class="row">
+                        @for (int i = 0; i < delimiter; i++)
+                        {
+                            <div class="col-lg-3 col-md-6 d-flex align-items-center justify-content-center">
+                                <a href="#1"><img src="/Images/@Model[i].GroupImage" class="d-flex mr-3 imageInCarousel" alt="@Model[i].GroupName"></a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="carousel-item active carousel-item-left">
+                    <div class="row">
+                        @for (int i = delimiter; i < delimiter * 2; i++)
+                        {
+                            <div class="col-lg-3 col-md-6 d-flex align-items-center justify-content-center">
+                                <a href="#1"><img src="/Images/@Model[i].GroupImage" class="d-flex mr-3 imageInCarousel" alt="@Model[i].GroupName"></a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="carousel-item carousel-item-next carousel-item-left">
+                    <div class="row">
+                        @for (int i = delimiter * 2; i < delimiter * 3; i++)
+                        {
+                            <div class="col-lg-3 col-md-6 d-flex align-items-center justify-content-center">
+                                <a href="#1"><img src="/Images/@Model[i].GroupImage" class="d-flex mr-3 imageInCarousel" alt="@Model[i].GroupName"></a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+</div>

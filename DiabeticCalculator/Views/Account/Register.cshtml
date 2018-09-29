@@ -1,0 +1,81 @@
+﻿@model DiabeticCalculator.Models.IdentityUs.CRUDUser.RegisterModel
+
+@{
+    ViewBag.Title = "Register";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="card mb-6 wow fadeIn mx-xl-auto">
+            <section class="form-dark scrollbar-dusty-grass thin square">
+                <div class="card card-image" style="background-image: url('../../Images/sea.jpg');">
+                    <div class="text-white rgba-stylish-strong py-5 px-5 z-depth-4">
+
+                        <!--Header-->
+                        <div class="text-center">
+                            <h3 class="white-text mb-5 mt-4 font-weight-bold"><strong>Вход</strong></h3>
+                        </div>
+
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "registrsubmitbtn" }))
+                        {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <small style="color:orangered">
+                            @Html.ValidationSummary(true)
+                        </small>
+                        <hr />
+                        <div class="md-form">
+                            <label for="Form-email5" class="" style="color: ghostwhite">Электронный адрес</label>
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control white-text", @id = "Form-email5" } })
+                            <small style="color:orangered">@Html.ValidationMessageFor(model => model.Email)</small>
+                        </div>
+                        <div class="md-form">
+                            <label for="Form-year5" class="" style="color: ghostwhite">Год рождения</label>
+                            @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control white-text", @id = "Form-year" } })
+                            <small style="color:orangered">@Html.ValidationMessageFor(model => model.Year)</small>
+                        </div>
+                        <div class="md-form">
+                            <label for="Form-pass5" class="" style="color: ghostwhite">Пароль</label>
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control white-text", @id = "Form-pass5", @type = "password" } })
+                            <small style="color:orangered">@Html.ValidationMessageFor(model => model.Password)</small>
+                        </div>
+                        <div class="md-form">
+                            <label for="Form-replpass5" class="" style="color: ghostwhite">Подтвердить пароль</label>
+                            @Html.EditorFor(model => model.PasswordConfirm, new { htmlAttributes = new { @class = "form-control white-text", @id = "Form-replpass5", @type = "password" } })
+                        </div>
+
+                        <br>
+                        <button type="submit" class="btn btn-success btn-block btn-rounded z-depth-1 waves-effect waves-light">Зарегистрировать</button>
+                    </div>
+                        }
+
+                        <div class="col-md-12">
+                            <p class="font-small white-text d-flex justify-content-end">Уже есть аккаунт? <a href="@Url.Action("Login", "Account")" class="green-text ml-1 font-weight-bold">Войти</a></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+</body>
+</html>
+
+

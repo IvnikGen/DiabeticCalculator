@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNet.Identity
+
+<div class="card gradient-custom mb-4 wow fadeIn" style="background: linear-gradient(to bottom right, #003399 0%, #6699ff 100%);">
+    @if (Request.IsAuthenticated)
+    {
+        <section class="form-dark scrollbar-dusty-grass thin square">
+            <div class="card card-image" style="background-image: url('../../Images/sea.jpg');">
+                <div class="text-white rgba-stylish-strong py-5 px-5 z-depth-4">
+                    <div class="text-center">
+                        <h3 class="white-text mb-5 mt-4 font-weight-bold"><strong>Добрый</strong> <a class="green-text font-weight-bold"><strong> день</strong></a></h3>
+                        <p>
+                            <strong>@User.Identity.GetUserName()</strong>
+                        </p>
+                        <p class="mb-4">
+                            <strong>
+                                Вход выполнен
+                            </strong>
+                        </p>
+                        @Html.ActionLink("Выход", "Logout", "Account", routeValues: null, htmlAttributes: new { @class = "btn btn-warning btn-md" })
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+        <!--Section: Live preview-->
+        <section class="form-dark scrollbar-dusty-grass thin square">
+
+            <!--Form without header-->
+            <div class="card card-image" style="background-image: url('../../Images/sea.jpg');">
+                <div class="text-white rgba-stylish-strong py-5 px-5 z-depth-4">
+
+                    <!--Header-->
+                    <div class="text-center">
+                        <h3 class="white-text mb-5 mt-4 font-weight-bold"><strong>Добрый</strong> <a class="green-text font-weight-bold"><strong> день</strong></a></h3>
+                        <p>
+                            <strong>Для доступа к личному кабинету необходимо выполнить вход.</strong>
+                        </p>
+                    </div>
+
+                     @Html.ActionLink("Вход", "Login", "Account", routeValues: null, htmlAttributes: new { @class = "btn btn-outline-white btn-md" })
+                     @Html.ActionLink("Регистрация", "Register", "Account", routeValues: null, htmlAttributes: new { @class = "btn btn-outline-white btn-md" })
+                </div>
+            </div>
+            <!--/Form without header-->
+
+        </section>
+        <!--Section: Live preview-->
+    }
+</div>
+

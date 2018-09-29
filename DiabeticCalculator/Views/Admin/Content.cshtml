@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Content";
+    Layout = "~/Views/Shared/LayoutAdminPanel.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-12" id="groupProductTable" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+        @Html.Action("GetGroupsTable")
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-lg-12" id="ProductTable" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+        @Html.Action("GetProductsTable")
+    </div>
+</div>
