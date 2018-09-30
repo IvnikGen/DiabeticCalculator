@@ -10,5 +10,6 @@ namespace SqlConnector.Objects
     {
         public string UserID { get; set; }
         public DateTime DateCreate { get; set; }
+        public int RecipeID { get; set; }
     }
 }

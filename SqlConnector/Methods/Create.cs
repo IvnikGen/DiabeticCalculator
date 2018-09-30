@@ -144,9 +144,9 @@ namespace SqlConnector.Methods
             bool result = false;
 
             string query = @"INSERT INTO [dbo].[PersonalArea]
-           ([UserID],[Product],[ProductGroup],[Carbohydrates],[GrammInUnit],[BreadUnits],[DateCreate] )
+           ([UserID],[Product],[ProductGroup],[Carbohydrates],[GrammInUnit],[BreadUnits],[DateCreate], [RecipeID] )
             VALUES
-           (@UserID, @Product,@ProductGroup,@Carbohydrates,@GrammInUnit,@BreadUnits,@DateCreate)";
+           (@UserID, @Product,@ProductGroup,@Carbohydrates,@GrammInUnit,@BreadUnits,@DateCreate, @RecipeID)";
 
             SqlCommand cmd = new SqlCommand(query, connection);
             cmd.CommandType = CommandType.Text;
@@ -160,6 +160,7 @@ namespace SqlConnector.Methods
             cmd.Parameters.Add("@GrammInUnit", SqlDbType.Float).Value = Area.GrammInUnit;
             cmd.Parameters.Add("@BreadUnits", SqlDbType.Float).Value = Area.BreadUnits;
             cmd.Parameters.Add("@DateCreate", SqlDbType.DateTime).Value = Area.DateCreate;
+            cmd.Parameters.Add("@RecipeID", SqlDbType.Float).Value = Area.RecipeID;
 
             try
             {
@@ -171,6 +172,51 @@ namespace SqlConnector.Methods
             {
                 exception = e.Message;
                 return false;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    SqlConnection.ClearPool(connection);
+                    connection.Dispose();
+                }
+            }
+
+            return result;
+        }
+
+        public static int insertJournal(Journal Journal)
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["dboBreadUnits"].ConnectionString);
+            int result = -1;
+
+            string query = @"INSERT INTO [dbo].[Recipe]
+           ([Title],[Created], [Insulin], [SugarLevel] )
+            output INSERTED.ID VALUES
+           (@Title, @Created, @Insulin, @SugarLevel)";
+
+            SqlCommand cmd = new SqlCommand(query, connection);
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandTimeout = 0;
+
+            cmd.Parameters.Add("@ID", SqlDbType.Int).Value = Journal.ID;
+            cmd.Parameters.Add("@Title", SqlDbType.NVarChar).Value = Journal.Title;
+            cmd.Parameters.Add("@Created", SqlDbType.DateTime).Value = Journal.Created;
+            cmd.Parameters.Add("@Insulin", SqlDbType.Float).Value = Journal.Insulin;
+            cmd.Parameters.Add("@SugarLevel", SqlDbType.Float).Value = Journal.SugarLevel;
+            
+
+            try
+            {
+                connection.Open();
+                int modified = (int)cmd.ExecuteScalar();
+                result = modified;
+            }
+            catch (Exception e)
+            {
+                exception = e.Message;
+                return result;
             }
             finally
             {

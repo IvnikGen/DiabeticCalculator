@@ -1,0 +1,440 @@
+﻿@model List<DiabeticCalculator.Models.RecipeModel>
+
+@{
+    Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+    ViewBag.Title = "Журнал";
+}
+
+<link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
+<link href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.css" rel="stylesheet">
+
+<link href='~/Content/fullcalendar-3.9.0/fullcalendar.min.css' rel='stylesheet' />
+<link href='~/Content/fullcalendar-3.9.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+
+<script src='~/Content/fullcalendar-3.9.0/lib/moment.min.js'></script>
+<script src='~/Content/fullcalendar-3.9.0/lib/jquery.min.js'></script>
+<script src='~/Content/fullcalendar-3.9.0/fullcalendar.min.js'></script>
+<script src='~/Content/fullcalendar-3.9.0/locale-all.js'></script>
+<script src='~/Content/fullcalendar-3.9.0/demos/js/theme-chooser.js'></script>
+
+
+<script src="~/Content/AdminMDB/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/Content/AdminMDB/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="~/Content/AdminMDB/vendor/chart.js/Chart.min.js"></script>
+<script src="~/Content/AdminMDB/js/sb-admin.min.js"></script>
+
+<div id="wrapper">
+    <ul class="sidebar navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("Index", "Area")">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Мои рационы</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("Charts", "Area")">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Графики</span>
+            </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="@Url.Action("Journal", "Area")">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Журнал</span>
+            </a>
+        </li>
+    </ul>
+
+    <div id="content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-8" id="recipeCallendar" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+                    <div class="card-header" style="background: linear-gradient(to bottom right, #006666 0%, #00ffcc 100%); color:ghostwhite; font-weight:bold">
+                        <div class="left">
+                            Журнал диабетика
+                        </div>
+                        <div class='right'>
+                            <div id='theme-system-selector' class='selector' style="display: none">
+                                <select>
+                                    <option value='bootstrap4' selected>Bootstrap 4</option>
+                                </select>
+                            </div>
+                            <span id='loading' style='display:none'>Загрузка темы...</span>
+                            <div data-theme-system="bootstrap4" class='selector'>
+                                Темы:
+                                <select class="selectpicker">
+                                    <option value=''>Default</option>
+                                    <option value='cerulean'>Cerulean</option>
+                                    <option value='cosmo'>Cosmo</option>
+                                    <option value='cyborg'>Cyborg</option>
+                                    <option value='darkly'>Darkly</option>
+                                    <option value='flatly'>Flatly</option>
+                                    <option value='journal'>Journal</option>
+                                    <option value='litera'>Litera</option>
+                                    <option value='lumen'>Lumen</option>
+                                    <option value='lux'>Lux</option>
+                                    <option value='materia'>Materia</option>
+                                    <option value='minty'>Minty</option>
+                                    <option value='pulse' selected>Pulse</option>
+                                    <option value='sandstone'>Sandstone</option>
+                                    <option value='simplex'>Simplex</option>
+                                    <option value='sketchy'>Sketchy</option>
+                                    <option value='slate'>Slate</option>
+                                    <option value='solar'>Solar</option>
+                                    <option value='spacelab'>Spacelab</option>
+                                    <option value='superhero'>Superhero</option>
+                                    <option value='united'>United</option>
+                                    <option value='yeti'>Yeti</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class='clear'></div>
+                    </div>
+                    <div class="card-body" style="z-index:2; background: linear-gradient(to top left, #66ffff 0%, #ffffff 100%)">
+                        <div id='calendar'></div>
+                    </div>
+                    <div class="card-footer text-muted">Последнее обновление @DateTime.Now</div>
+                </div>
+
+                <div class="col-lg-4" id="recipeEditForm" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+                    <div class="scrollbarJ" id="style-3">
+                        <div class="force-overflow">
+                            <h2>Рецепт № <span id="recipeID"></span></h2>
+                            <div style="width:100%">
+                                <div class="form-group">
+                                    <label for="Title" class="col-form-label">Заголовок:</label>
+                                    <input id="journalTitle" class="form-control" type="text" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Create" class="col-form-label">Создан:</label>
+                                    <input id="journalCreate" class="form-control" type="text" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Insulin" class="col-form-label">Инсулин</label>
+                                    <input id="journalInsulin" class="form-control" type="text" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Sugar" class="col-form-label">Уровень сахара</label>
+                                    <input id="journalSugar" class="form-control" type="text" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ProductsList" class="col-form-label">Список продуктов</label>
+                                    <hr />
+                                    <div id="listProdJournal"></div>
+                                </div>
+                                <div>
+                                    <button id="setSugarBtn" class="btn btn-warning  btn-lg btn-group" type="button" style="float:left">Ввести показатель сахара</button>
+                                    <div class="modal-body" id="bodymodalAddSugar" style="display:inline-block"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-lg-12" id="JournalLineChart" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+                    <div class="card-header">
+                        <i class="fas fa-chart-area"></i>
+                        График контроля рациона
+                    </div>
+                    <div class="card-body">
+                        <canvas id="JournalChart" width="100%" height="30"></canvas>
+                    </div>
+                    <div class="card-footer small text-muted">Последнее обновление @DateTime.Now</div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="sticky-footer">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>&copy; @DateTime.Now.Year - Diabetic Calculator</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+
+
+
+<style>
+    .left {
+        float: left
+    }
+
+    .right {
+        float: right
+    }
+
+    .clear {
+        clear: both
+    }
+
+    #calendar {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 10px;
+    }
+
+    .scrollbarJ {
+        padding:5px;
+        height: 800px;
+        overflow-y: scroll;
+    }
+
+    .force-overflow {
+        min-height: 450px;
+    }
+
+    #style-3::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #F5F5F5;
+    }
+
+    #style-3::-webkit-scrollbar {
+        width: 6px;
+        background-color: #F5F5F5;
+    }
+
+    #style-3::-webkit-scrollbar-thumb {
+        background-color: #000000;
+    }
+</style>
+
+<script src="~/Scripts/Moment.js"></script>
+
+<script>
+
+    var callendarData = @Html.Raw(Json.Encode(Model));
+    var eventsData = [];
+    for (var i = 0; i < callendarData.length; i++) {
+        eventsData.push({
+            id: callendarData[i].ID,
+            title: callendarData[i].Title,
+            start: formatDate(callendarData[i].Created),
+            allDay: false,
+            className: "info"
+        });
+    }
+
+    $(document).ready(function () {
+
+        initThemeChooser({
+
+            init: function (themeSystem) {
+                $('#calendar').fullCalendar({
+                    themeSystem: themeSystem,
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay,listMonth'
+                    },
+                    locale: 'ru',
+                    weekNumbers: true,
+                    navLinks: true, // can click day/week names to navigate views
+                    editable: false,
+                    eventLimit: true, // allow "more" link when too many events
+                    firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
+                    selectable: false,
+                    defaultView: 'month',
+                    axisFormat: 'h:mm',
+                    allDaySlot: false,
+                    selectHelper: true,
+                    select: function (start, end, allDay) {
+                        var title = prompt('Заголовок:');
+                        if (title) {
+                            $('#calendar').fullCalendar('renderEvent',
+                                {
+                                    title: title,
+                                    start: start,
+                                    end: end,
+                                    allDay: allDay
+                                },
+                                true // make the event "stick"
+                            );
+                        }
+                        $('#calendar').fullCalendar('unselect');
+                    },
+                    droppable: true, // this allows things to be dropped onto the calendar !!!
+                    drop: function (date, allDay) { // this function is called when something is dropped
+
+                        var originalEventObject = $(this).data('eventObject');
+
+                        var copiedEventObject = $.extend({}, originalEventObject);
+
+                        copiedEventObject.start = date;
+                        copiedEventObject.allDay = allDay;
+
+                        $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+                        if ($('#drop-remove').is(':checked')) {
+                            $(this).remove();
+                        }
+
+                    },
+                    eventClick: function (calEvent, jsEvent, view) {
+                        callendarData.forEach(function (packet) {
+                            if (calEvent.id === packet.ID) {
+                                $("#recipeID").text(packet.ID);
+                                $("#journalTitle").val(packet.Title);
+                                $("#journalCreate").val(formatDate(packet.Created).replace('T', ' '));
+                                $("#journalInsulin").val(packet.Insulin);
+                                $("#journalSugar").val(packet.SugarLevel);
+
+                                var list = "";
+                                for (var i = 0; i < packet.Rations.length; i++) {
+                                    list += '<div style="box-shadow: 0 0 10px rgba(0,0,0, 1); margin: 10px; padding:10px">' +
+                                        '<div style="display: block; text-align: center">' +
+                                        '<input class="form-control" type="text" value="' + packet.Rations[i].Product + '" readonly>' +
+                                        '<label class="col-form-label">Хлебные единицы</label>' +
+                                        '<input class="form-control" type="text" value="' + packet.Rations[i].BreadUnits + '" readonly>' +
+                                        '<label class="col-form-label">Углеводы</label>' +
+                                        '<input class="form-control" type="text" value="' + packet.Rations[i].Carbohydrates + '" readonly>' +
+                                        '</div>' +
+                                        '</div>';
+                                }
+                                $("#listProdJournal").html(list);
+                            }
+                        });
+                    },
+                    events: eventsData
+                });
+            },
+
+            change: function (themeSystem) {
+                $('#calendar').fullCalendar('option', 'themeSystem', themeSystem);
+            }
+
+        });
+    });
+    function formatDate(value) {
+        if (value === null) return "";
+        return moment(value).format('YYYY-MM-DDTHH:mm:ss');
+    }
+
+    var template = 'DD.MM.YYYY'
+    function datemaker(date) {
+        if (date === null) return "";
+        return moment(date).format(template);
+    }
+
+    var ctx = $("#JournalChart")
+    var labels = [], brUnits = [], carb = [], sugar = [], ins = [];
+
+    callendarData.forEach(function (packet) {
+        labels.push(datemaker(packet.DateCreate));
+
+        var units = 0;
+        var carboh = 0;
+        for (var i = 0; i < packet.Rations.length; i++) {
+            units += packet.Rations[i].BreadUnits;
+            carboh += packet.Rations[i].Carbohydrates;
+        }
+
+        brUnits.push(units);
+        carb.push(carboh);
+        
+        sugar.push(packet.SugarLevel);
+        ins.push(packet.Insulin);
+    });
+
+    var tempData = {
+        labels: labels,
+        datasets: [
+            {
+                label: "Хлебные единицы",
+                fillColor: "rgba(102, 51, 0,0.2)",
+                strokeColor: "rgba(102, 51, 0,1)",
+                pointColor: "rgba(102, 51, 0,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(102, 51, 0,1)",
+                backgroundColor: "rgba(102, 51, 0,0.2)",
+                borderColor: "rgba(102, 51, 0,1)",
+                data: brUnits
+            },
+            {
+                label: "Углеводы",
+                fillColor: "rgba(0, 153, 51,0.2)",
+                strokeColor: "rgba(0, 153, 51,1)",
+                pointColor: "rgba(0, 153, 51,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(0, 153, 51,1)",
+                backgroundColor: "rgba(0, 153, 51,0.2)",
+                borderColor: "rgba(0, 153, 51,1)",
+                data: carb
+            },
+            {
+                label: "Уровень сахара",
+                fillColor: "rgba(255, 102, 0, 0.2)",
+                strokeColor: "rgba(255, 102, 0,1)",
+                pointColor: "rgba(255, 102, 0,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(255, 102, 0,1)",
+                backgroundColor: "rgba(255, 102, 0,0.2)",
+                borderColor: "rgba(255, 102, 0,1)",
+                data: sugar
+            },
+            {
+                label: "Инсулин",
+                fillColor: "rgba(0, 102, 153,0.2)",
+                strokeColor: "rgba(0, 102, 153,1)",
+                pointColor: "rgba(0, 102, 153,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(0, 102, 153,1)",
+                backgroundColor: "rgba(0, 102, 153,0.2)",
+                borderColor: "rgba(0, 102, 153,1)",
+                data: ins
+            },
+        ]
+    };
+    var journalChart = new Chart(ctx, {
+        type: 'line',
+        data: tempData,
+        options: {
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: 'date'
+                    },
+                    gridLines: {
+                        display: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 31
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: 150,
+                        maxTicksLimit: 15
+                    },
+                    gridLines: {
+                        color: "rgba(0, 0, 0, .125)",
+                    }
+                }],
+            },
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    $("#setSugarBtn").on('click', function () {
+
+        var uid = $("#recipeID").val();
+
+        $.get("/Area/AddSugarToRecipe", { id: uid }).done(function (data) {
+            $('#bodymodalAddSugar').html(data);
+        });
+    });
+
+</script>

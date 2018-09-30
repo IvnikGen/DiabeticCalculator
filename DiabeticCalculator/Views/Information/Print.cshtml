@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "~/Views/Shared/Template.cshtml";
+    ViewBag.Title = "Информация";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-auto">
+            <center>
+                <button class="btn btn-primary hidden-print" onclick="printInfoTable()"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Печать</button>
+            </center>
+
+            <table id="DefaultTable" class="table table-striped table-bordered" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-sm-2" style="background-color: #212121; color:ghostwhite; vertical-align: middle; text-align:center">Название</th>
+                        <th class="col-sm-4" style="background-color: #212121; color:ghostwhite; vertical-align: middle; text-align:center">Углеводы<br>(гр на 100гр)</th>
+                        <th class="col-sm-4" style="background-color: #212121; color:ghostwhite; vertical-align: middle; text-align:center">Хлебные единицы<br>(на 100 гр)</th>
+                        <th class="col-md-3" style="background-color: #212121; color:ghostwhite">Вес</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script>
+        var table;
+        $(document).ready(function () {
+            table = $('#DefaultTable').DataTable(
+                {
+
+                    "scrollX": "500px",
+                    "scrollCollapse": true,
+                    "ordering": true,
+                    "processing": true,
+                    "serverSide": true,
+                    "searching": true,
+                    "orderMulti": false,
+                    "language": {
+                        "processing": '<div class="loader"></div><h4 style="color: green;">Загрузка данных...</h4>',
+                        "lengthMenu": "<span class='h5 my- 4'>Отобразить _MENU_ элементов</span>",
+                        "zeroRecords": "Извините, по Вашему запросу ничего не найдено",
+                        "info": "<span class='h5 my- 4'>Страница _PAGE_ из _PAGES_</span>",
+                        "infoEmpty": "Нет записей",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        "search": "_INPUT_",
+                        "searchPlaceholder": "Поиск...",
+                        "paginate": {
+                            "previous": "Предыдущая",
+                            "next": "Следующая"
+                        }
+                    },
+                    "order": [[1, 'asc']],
+                    "ajax":
+                    {
+                        "url": "/Information/PrintData",
+                        "type": "POST",
+                        "dataType": "JSON",
+                    },
+                    "columnDefs": [
+                        { "targets": [3], "orderable": false },
+                        { "targets": [3], "searchable": false }
+                    ],
+                    "columns": [
+                        { "data": "Product", "name": "Product" },
+                        { "data": "Carbohydrates", "name": "Carbohydrates" },
+                        { "data": "BreadUnits", "name": "BreadUnits" },
+                        { "data": "GrammInUnit", "name": "GrammInUnit" }
+                    ],
+                });
+        });
+
+        function printInfoTable() {
+            //$('header').hide();
+            //$('footer').hide();
+            window.print();
+        }
+
+    </script>
+

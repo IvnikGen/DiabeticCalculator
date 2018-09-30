@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -64,26 +66,43 @@
                             <a class="nav-link waves-effect" href="@Url.Action("Index", "Information")" target="_blank">Информация</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect disabled" href="#" target="_blank">Таблицы для печати</a>
+                            <a class="nav-link waves-effect" href="@Url.Action("Print", "Information")" target="_blank">Таблицы для печати</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link waves-effect" href="@Url.Action("Index", "Area")" target="_blank">Личный кабинет</a>
                         </li>
+
+                        @if (Request.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                @Html.ActionLink("Выход", "Logout", "Account", routeValues: null, htmlAttributes: new { @class = "nav-link waves-effect" })
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                @Html.ActionLink("Вход", "Login", "Account", routeValues: null, htmlAttributes: new { @class = "nav-link waves-effect" })
+                            </li>
+                            <li class="nav-item">
+                                @Html.ActionLink("Регистрация", "Register", "Account", routeValues: null, htmlAttributes: new { @class = "nav-link waves-effect" })
+                            </li>
+                        }
+
                     </ul>
                     <!-- Right -->
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
-                            <a href="https://www.facebook.com/mdbootstrap" class="nav-link waves-effect" target="_blank">
+                            <a href="https://www.facebook.com/" class="nav-link waves-effect" target="_blank">
                                 <i class="fa fa-facebook"></i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://twitter.com/MDBootstrap" class="nav-link waves-effect" target="_blank">
-                                <i class="fa fa-twitter"></i>
+                            <a href="https://github.com/IvnikGen/DiabeticCalculator" target="_blank">
+                                <i class="fa fa-github mr-3"></i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://plus.google.com/u/0/b/107863090883699620484" class="nav-link waves-effect" target="_blank">
+                            <a href="https://plus.google.com/" class="nav-link waves-effect" target="_blank">
                                 <i class="fa fa-google-plus"></i>
                             </a>
                         </li>
@@ -102,29 +121,11 @@
         <hr class="my-4">
         <!-- Social icons -->
         <div class="pb-4">
-            <a href="https://www.facebook.com/mdbootstrap" target="_blank">
+            <a href="https://www.facebook.com/" target="_blank">
                 <i class="fa fa-facebook mr-3"></i>
             </a>
-            <a href="https://twitter.com/MDBootstrap" target="_blank">
-                <i class="fa fa-twitter mr-3"></i>
-            </a>
-            <a href="https://www.youtube.com/watch?v=7MUISDJ5ZZ4" target="_blank">
-                <i class="fa fa-youtube mr-3"></i>
-            </a>
-            <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
-                <i class="fa fa-google-plus mr-3"></i>
-            </a>
-            <a href="https://dribbble.com/mdbootstrap" target="_blank">
-                <i class="fa fa-dribbble mr-3"></i>
-            </a>
-            <a href="https://pinterest.com/mdbootstrap" target="_blank">
-                <i class="fa fa-pinterest mr-3"></i>
-            </a>
-            <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
+            <a href="https://github.com/IvnikGen/DiabeticCalculator" target="_blank">
                 <i class="fa fa-github mr-3"></i>
-            </a>
-            <a href="http://codepen.io/mdbootstrap/" target="_blank">
-                <i class="fa fa-codepen mr-3"></i>
             </a>
         </div>
         <!-- Social icons -->
@@ -150,7 +151,7 @@
 </html>
 
 <style>
-    #top{
+    #top {
         font-family: 'Courier New';
     }
 </style>

@@ -138,9 +138,58 @@ namespace SqlConnector.Methods
                                 GrammInUnit = reader["GrammInUnit"] == DBNull.Value ? 0 : Convert.ToInt32(reader["GrammInUnit"].ToString()),
                                 BreadUnits = reader["BreadUnits"] == DBNull.Value ? 0 : Math.Round(Convert.ToSingle(reader["BreadUnits"].ToString()), 2),
                                 ProductGroupName = reader["ProductGroup"].ToString().Trim(),
-                                DateCreate = reader["DateCreate"] == DBNull.Value ? DateTime.Now: dt
+                                DateCreate = reader["DateCreate"] == DBNull.Value ? DateTime.Now: dt,
+                                RecipeID = Convert.ToInt32(reader["RecipeID"].ToString())
                             });
                         }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                exception = e.Message;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    SqlConnection.ClearPool(connection);
+                    connection.Dispose();
+                }
+            }
+
+            return liProd;
+        }
+
+        static public List<Journal> getJournalTable()
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["dboBreadUnits"].ConnectionString);
+            List<Journal> liProd = new List<Journal>();
+
+            try
+            {
+                connection.Open();
+
+                using (var command = new SqlCommand(@"SELECT * FROM [dbo].[Recipe]", connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandTimeout = 0;
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        DateTime dt = DateTime.Parse(reader["Created"].ToString());
+
+                        liProd.Add(new Journal
+                        {
+                            ID = Convert.ToInt32(reader["ID"].ToString()),
+                            Title = reader["Title"].ToString().Trim(),
+                            Insulin = Math.Round(Convert.ToSingle(reader["Insulin"]), 2),
+                            Created = reader["Created"] == DBNull.Value ? DateTime.Now : dt,
+                            SugarLevel = Math.Round(Convert.ToSingle(reader["SugarLevel"]), 2),
+                        });
                     }
                 }
             }

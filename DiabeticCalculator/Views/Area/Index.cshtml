@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = "~/Views/Shared/LayoutAdmin.cshtml";
-    ViewBag.Title = "Personal Area";
+    ViewBag.Title = "Личный кабинет";
 }
 
 
@@ -22,7 +22,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="@Url.Action("Journal", "Area")">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Журнал</span>
             </a>

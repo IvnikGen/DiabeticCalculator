@@ -1,0 +1,11 @@
+﻿@model SqlConnector.Objects.Journal
+
+
+@using (Html.BeginForm())
+{
+    <div class="input-group" style="margin-top: -10px">
+        @Html.EditorFor(model => model.SugarLevelS, new { htmlAttributes = new { @required = true, @type = "number", @step = "0.001", @class = "form-control" } })
+        <button class="input-group-addon btn btn-success" type="submit">+</button>
+    </div>
+}
+

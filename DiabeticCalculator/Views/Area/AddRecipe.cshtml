@@ -1,0 +1,20 @@
+﻿@model SqlConnector.Objects.Journal
+
+
+@using (Html.BeginForm())
+{
+<div style="width:100%">
+    <div class="form-group">
+        @Html.Label("Заголовок:", new { @class = "col-form-label" })
+        <p>  @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @required = true, @class = "form-control" } })</p>
+    </div>
+    <div class="form-group">
+        @Html.Label("Количество инсулина:", new { @class = "col-form-label" })
+        <p>@Html.EditorFor(model => model.Insulin, new { htmlAttributes = new { @required = true, @type = "number", @step = "0.001", @class = "form-control" } })</p>
+    </div>
+    <div>
+        <button class="btn btn-success  btn-lg btn-group" type="submit" style="float:right">Сохранить</button>
+    </div>
+</div>
+}
+

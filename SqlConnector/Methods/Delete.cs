@@ -110,5 +110,37 @@ namespace SqlConnector.Methods
                 }
             }
         }
+
+        static public bool deleteJournalTable(Journal product)
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["dboBreadUnits"].ConnectionString);
+            string query = "DELETE FROM [dbo].[Recipe] WHERE ID = @ID";
+
+            SqlCommand cmd = new SqlCommand(query, connection);
+            cmd.CommandTimeout = 0;
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.Add("@ID", SqlDbType.Int).Value = product.ID;
+
+            try
+            {
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                exception = e.Message;
+                return false;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    SqlConnection.ClearPool(connection);
+                    connection.Dispose();
+                }
+            }
+        }
     }
 }

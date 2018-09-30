@@ -46,6 +46,7 @@
     <Compile Include="Methods\Delete.cs" />
     <Compile Include="Methods\Read.cs" />
     <Compile Include="Methods\Update.cs" />
+    <Compile Include="Objects\Journal.cs" />
     <Compile Include="Objects\PersonalArea.cs" />
     <Compile Include="Objects\Products.cs" />
     <Compile Include="Objects\ProductGroups.cs" />

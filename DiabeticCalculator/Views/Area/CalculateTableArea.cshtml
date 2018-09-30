@@ -1,7 +1,7 @@
 ﻿
 <div class="card-header">
     <i class="fas fa-table"></i>
-    Ваш рацион, @ViewBag.User
+    Ваш сегодняшний рацион, @ViewBag.User
 </div>
 <div class="card-body">
     <div id="CalcTableArea" class="table-responsive">
@@ -13,7 +13,9 @@
                     <th class="col-sm-2" style="background-color: #212121; color:ghostwhite; vertical-align: middle; text-align:center">Добавлено</th>
                     <th class="col-sm-2" style="background-color: #212121; color:ghostwhite; vertical-align: middle; text-align:center">Углеводы</th>
                     <th class="col-sm-2" style="background-color: #212121; color:ghostwhite; vertical-align: middle; text-align:center">Хлебные единицы</th>
-                    <th class="col-sm-2" style="background-color: #212121; color:ghostwhite; vertical-align: middle; text-align:center"></th>
+                    <th class="col-sm-2" style="background-color: #212121; color:ghostwhite; vertical-align: middle; text-align:center">
+                        <button id="addRecipeButton" type="button" name="AddRecipe" class="btn bg-dark" data-toggle="modal" data-target="#AddModal" style="color:ghostwhite">Создать рецепт</button>
+                    </th>
                 </tr>
             </thead>
             <tfoot class="table table-striped table-bordered">
@@ -32,6 +34,22 @@
 
 <div class="card-footer small text-muted">Последнее обновление @DateTime.Now</div>
 
+<div id="groupProductTable" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.9)">
+    <div class="modal fade right" id="AddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-full-height modal-right" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавить группу продутов</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="false">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="bodymodalAdd">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade right" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-full-height modal-right" role="document">
@@ -148,6 +166,12 @@
                         $(api.column(4).footer()).html(breadUnits.toFixed(2));
                     },
                 });
+
+            $('#addRecipeButton').on('click', function () {
+                $.get("/Area/AddRecipeTable").done(function (data) {
+                    $('#bodymodalAdd').html(data);
+                });
+            });
     });
 
         $('#CalculateArea').on('click', 'tr', function () {

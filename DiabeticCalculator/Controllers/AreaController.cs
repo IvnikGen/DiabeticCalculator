@@ -11,6 +11,7 @@ using DiabeticCalculator.Models.IdentityUs;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
 using System.Threading.Tasks;
+using DiabeticCalculator.Models;
 
 namespace DiabeticCalculator.Controllers
 {
@@ -23,6 +24,7 @@ namespace DiabeticCalculator.Controllers
                 return HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             }
         }
+        public static List<PersonalArea> currentTableDataArea;
 
         // GET: Area
         [Authorize]
@@ -88,7 +90,10 @@ namespace DiabeticCalculator.Controllers
             var user = UserManager.FindById(User.Identity.GetUserId());
             string userID = user.Login;
 
-            List<PersonalArea> persarea = Read.getAreaTable().Where(x => x.UserID == userID).ToList();
+            List<PersonalArea> persarea = Read.getAreaTable().Where(x => x.UserID == userID && x.DateCreate.ToShortDateString() == DateTime.Now.ToShortDateString() && x.RecipeID == 0).ToList();
+            currentTableDataArea = new List<PersonalArea>();
+            currentTableDataArea = persarea;
+
             @ViewBag.User = userID;
             return PartialView("~/Views/Area/CalculateTableArea.cshtml", persarea);
         }
@@ -109,7 +114,7 @@ namespace DiabeticCalculator.Controllers
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int totalRecords = 0;
 
-            List<PersonalArea> persarea = Read.getAreaTable().Where(x => x.UserID == userID).ToList();
+            List<PersonalArea> persarea = Read.getAreaTable().Where(x => x.UserID == userID && x.DateCreate.ToShortDateString() == DateTime.Now.ToShortDateString() && x.RecipeID == 0).ToList();
 
             var products = (from a in persarea select a);
             if (!string.IsNullOrEmpty(search))
@@ -139,6 +144,7 @@ namespace DiabeticCalculator.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult TableDelete(int id)
         {
@@ -150,6 +156,7 @@ namespace DiabeticCalculator.Controllers
             return PartialView();
         }
 
+        [Authorize]
         [HttpPost]
         [ActionName("TableDelete")]
         public ActionResult TableDeleteConfirmed(int id)
@@ -167,5 +174,91 @@ namespace DiabeticCalculator.Controllers
             return View("~/Views/Area/Index.cshtml");
         }
 
+        [HttpGet]
+        [Authorize]
+        public ActionResult AddRecipeTable()
+        {
+            return PartialView("AddRecipe");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult AddRecipeTable(Journal data)
+        {
+            if (data != null)
+            {
+                data.Created = DateTime.Now;
+                int id = Create.insertJournal(data);
+
+                if (id > 0)
+                {
+                    foreach (var item in currentTableDataArea)
+                    {
+                        item.RecipeID = id;
+                        Update.updateAreaTable(item);
+                    }
+                }
+            }
+            return RedirectToAction("Index", "Area");
+        }
+
+        [Authorize]
+        public ActionResult Journal()
+        {
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            string userID = user.Login;
+            List<PersonalArea> persarea = Read.getAreaTable().Where(x => x.UserID == userID).ToList();
+            List<RecipeModel> journalL = new List<RecipeModel>();
+
+            var recipe = persarea.GroupBy(x => x.RecipeID).Select(g => new { ID = g.Key, Created = g.First().DateCreate, rations = g });
+
+
+            foreach (var j in recipe)
+            {
+                try
+                {
+                    journalL.Add(new RecipeModel
+                    {
+                        ID = j.ID,
+                        Created = Read.getJournalTable().FirstOrDefault(x => x.ID == j.ID).Created,
+                        Insulin = Read.getJournalTable().FirstOrDefault(x => x.ID == j.ID).Insulin,
+                        Title = Read.getJournalTable().FirstOrDefault(x => x.ID == j.ID).Title,
+                        Rations = j.rations.ToList(),
+                        SugarLevel = Read.getJournalTable().FirstOrDefault(x => x.ID == j.ID).SugarLevel,
+                    });
+                }
+                catch { }
+            }
+
+
+            return PartialView(journalL);
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult AddSugarToRecipe(int id)
+        {
+            Journal journal = Read.getJournalTable().FirstOrDefault(x => x.ID == id);
+
+            return PartialView("AddSugarForm", journal);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ActionName("AddSugarToRecipe")]
+        public ActionResult AddSugarToRecipeData(Journal changes)
+        {
+            Journal journal = Read.getJournalTable().FirstOrDefault(x => x.ID == changes.ID);
+
+            if(journal != null)
+            {
+                journal.SugarLevel = Convert.ToDouble(changes.SugarLevelS.Replace('.', ',').Trim());
+                Update.updateJournalTable(journal);
+            }
+
+
+            return RedirectToAction("Journal", "Area");
+        }
     }
 }

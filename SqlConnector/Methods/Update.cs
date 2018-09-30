@@ -106,8 +106,9 @@ namespace SqlConnector.Methods
                 "[ProductGroup] = @ProductGroup," +
                 "[Carbohydrates] = @Carbohydrates," +
                 "[GrammInUnit] = @GrammInUnit," +
-                "[BreadUnits] = @BreadUnits " +
-                "[DateCreate] = @DateCreate" +
+                "[BreadUnits] = @BreadUnits, " +
+                "[DateCreate] = @DateCreate," +
+                "[RecipeID] = @RecipeID " +
                 "WHERE ID = @ID";
 
             SqlCommand cmd = new SqlCommand(query, connection);
@@ -122,6 +123,50 @@ namespace SqlConnector.Methods
             cmd.Parameters.Add("@GrammInUnit", SqlDbType.Int).Value = product.GrammInUnit;
             cmd.Parameters.Add("@BreadUnits", SqlDbType.Float).Value = product.BreadUnits;
             cmd.Parameters.Add("@DateCreate", SqlDbType.DateTime).Value = product.DateCreate;
+            cmd.Parameters.Add("@RecipeID", SqlDbType.Int).Value = product.RecipeID;
+
+            try
+            {
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                exception = e.Message;
+                return false;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    SqlConnection.ClearPool(connection);
+                    connection.Dispose();
+                }
+            }
+        }
+
+        static public bool updateJournalTable(Journal product)
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["dboBreadUnits"].ConnectionString);
+            string query = "UPDATE [dbo].[Recipe] " +
+                "SET " +
+                "[Title] = @Title," +
+                "[Created] = @Created," +
+                "[Insulin] = @Insulin," +
+                "[SugarLevel] = @SugarLevel " +
+                "WHERE ID = @ID";
+
+            SqlCommand cmd = new SqlCommand(query, connection);
+            cmd.CommandTimeout = 0;
+            cmd.CommandType = CommandType.Text;
+
+            cmd.Parameters.Add("@ID", SqlDbType.Int).Value = product.ID;
+            cmd.Parameters.Add("@Title", SqlDbType.NVarChar).Value = product.Title;
+            cmd.Parameters.Add("@Created", SqlDbType.DateTime).Value = product.Created;
+            cmd.Parameters.Add("@Insulin", SqlDbType.Float).Value = product.Insulin;
+            cmd.Parameters.Add("@SugarLevel", SqlDbType.Float).Value = product.SugarLevel;
 
             try
             {
